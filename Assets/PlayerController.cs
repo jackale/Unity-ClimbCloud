@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,7 +22,8 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // ジャンプ
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space)
+            && Mathf.Approximately(this.rigid2D.velocity.y, 0f)) 
         {
             this.rigid2D.AddForce(transform.up * this.jumpForce);
         }
@@ -44,7 +46,18 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(key, 1, 1);
         }
 
+        if (transform.position.y < -10)
+        {
+            SceneManager.LoadScene("GameScene");
+        }
+
         // プレイヤの速度に応じてアニメーション速度を変える
         this.animator.speed = speedx / 2.0f;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("Clear");
+        SceneManager.LoadScene("ClearScene");
     }
 }
